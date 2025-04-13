@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  DOCKER_REPOSITORY: "adrianonsilva"
+  DOCKER_IMAGE: "demo-app"
+
 jobs:
   build-java-app:
 
@@ -28,12 +32,37 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build      
 
-    - name: Build and Push Docker Image
-      uses: MaximilianoBz/dockerhub-buildpush@v1.1
+    - name: Generate sha # to use as tag on image
+      id: generate_sha
+      run: |
+        SHA=$(echo $GITHUB_SHA | head -c7)
+        echo "sha=$SHA" >> $GITHUB_OUTPUT
+        cat $GITHUB_OUTPUT
+
+    - name: Build and push image
+      uses: docker/setup-docker-action@v4.3.0
+
+    - name: Build docker image
+      run: docker build -t $DOCKER_REPOSITORY/demo-app:${{ steps.generate_sha.outputs.sha }} .
+
+    - name: Log into the container registry
+      uses: docker/login-action@v3
       with:
-        registry_url: docker.io
-        repository_name: adrianonsilva/demo-app-java
-        user_name: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}   
-        image_version: latest
-        docker_file: .
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
+    - name: Push image
+      run: |
+        docker push $DOCKER_REPOSITORY/DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }}
+        docker tag $DOCKER_REPOSITORY/DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }} $DOCKER_REPOSITORY/DOCKER_IMAGE:latest
+        docker push $DOCKER_REPOSITORY/DOCKER_IMAGE:latest
+
+#    - name: Build and Push Docker Image
+#      uses: MaximilianoBz/dockerhub-buildpush@v1.1
+#      with:
+#        registry_url: docker.io
+#        repository_name: adrianonsilva/demo-app-java
+#        user_name: ${{ secrets.DOCKER_USERNAME }}
+#        password: ${{ secrets.DOCKER_TOKEN }}   
+#        image_version: latest
+#        docker_file: .
