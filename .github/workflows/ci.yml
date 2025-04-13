@@ -53,9 +53,9 @@ jobs:
 
     - name: Push image
       run: |
-        docker push $DOCKER_REPOSITORY/DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }}
-        docker tag $DOCKER_REPOSITORY/DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }} $DOCKER_REPOSITORY/DOCKER_IMAGE:latest
-        docker push $DOCKER_REPOSITORY/DOCKER_IMAGE:latest
+        docker push $DOCKER_REPOSITORY/$DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }}
+        docker tag $DOCKER_REPOSITORY/$DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }} $DOCKER_REPOSITORY/$DOCKER_IMAGE:latest
+        docker push $DOCKER_REPOSITORY/$DOCKER_IMAGE:latest
 
 #    - name: Build and Push Docker Image
 #      uses: MaximilianoBz/dockerhub-buildpush@v1.1
