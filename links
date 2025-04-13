@@ -1,0 +1,25 @@
+# install grade
+sudo apt update
+sudo apt install gradle -y
+gradle -v
+
+sudo apt remove gradle -y
+sudo apt purge gradle
+sudo apt autoremove
+
+
+wget https://services.gradle.org/distributions/gradle-4.10-bin.zip
+
+export GRADLE_HOME=/usr/local/gradle-4.10
+export PATH=$GRADLE_HOME/bin:$PATH
+gradle -v
+
+# build project
+gradle wrapper
+chmod +x gradlew
+
+
+./gradlew build
+
+$ java -jar ./build/libs/java-app-1.0-SNAPSHOT.jar
+
