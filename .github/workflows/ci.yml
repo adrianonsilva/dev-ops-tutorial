@@ -43,7 +43,7 @@ jobs:
       uses: docker/setup-docker-action@v4.3.0
 
     - name: Build docker image
-      run: docker build -t $DOCKER_REPOSITORY/DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }} .
+      run: docker build -t $DOCKER_REPOSITORY/$DOCKER_IMAGE:${{ steps.generate_sha.outputs.sha }} .
 
     - name: Log into the container registry
       uses: docker/login-action@v3
